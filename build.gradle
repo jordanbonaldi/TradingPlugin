@@ -1,0 +1,47 @@
+plugins {
+    id 'java'
+}
+
+group 'TradingPlugin'
+version '1.0-SNAPSHOT'
+
+sourceCompatibility = 1.8
+
+repositories {
+    mavenCentral()
+}
+
+task buildEngine(type: Jar) {
+    manifest {
+        attributes 'Implementation-Title': 'CoreEngin SoftWare',
+                'Implementation-Version': version,
+                'Main-Class': 'net.neferett.tradingplugin.TradingPlugin'
+    }
+    baseName = project.name + '-all'
+    from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
+    with jar
+}
+
+test {
+    reports.junitXml.destination = file("$buildDir/xml")
+    testLogging {
+        showStandardStreams = true
+    }
+}
+
+repositories {
+    mavenCentral()
+
+    flatDir {
+        dirs 'libs'
+    }
+}
+
+dependencies {
+    testCompile group: 'junit', name: 'junit', version: '4.12'
+    compile group: 'org.json', name: 'json', version: '20180813'
+    compile group: 'org.reflections', name: 'reflections', version: '0.9.11'
+    compile name: 'CoreEngine-all-1.2-SNAPSHOT'
+    compileOnly 'org.projectlombok:lombok:1.18.4'
+    annotationProcessor 'org.projectlombok:lombok:1.18.4'
+}
