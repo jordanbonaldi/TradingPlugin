@@ -4,5 +4,6 @@ public enum PriceEnum {
     OPEN,
     TARGET,
     STOP,
-    CLOSE
+    CLOSE,
+    CURRENT
 }

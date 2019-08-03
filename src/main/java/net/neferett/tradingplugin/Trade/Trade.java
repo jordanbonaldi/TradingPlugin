@@ -6,9 +6,12 @@ import lombok.NoArgsConstructor;
 import lombok.NonNull;
 import net.neferett.redisapi.Annotations.Redis;
 import net.neferett.tradingplugin.Trade.Price.PriceAction;
+import net.neferett.tradingplugin.Trade.Price.PriceEnum;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Data
 @AllArgsConstructor
@@ -27,5 +30,18 @@ public class Trade {
 
     @NonNull
     private UUID uuid;
+
+    public PriceAction getPriceOf(PriceEnum priceEnum) {
+        return this.actions.stream().filter(e -> e.getType() == priceEnum).findFirst().orElse(null);
+    }
+
+    public void calculProfitAndLose() {
+        PriceAction openPrice = this.getPriceOf(PriceEnum.OPEN);
+        PriceAction stopPrice = this.getPriceOf(PriceEnum.STOP);
+        List<PriceAction> targets = actions.stream().filter(e -> e.getType() == PriceEnum.TARGET).collect(Collectors.toList());
+
+        stopPrice.calculDelta(openPrice.getPrice(), this.type);
+        targets.forEach(e -> e.calculDelta(openPrice.getPrice(), this.type));
+    }
 
 }

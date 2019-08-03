@@ -1,8 +1,6 @@
 package net.neferett.tradingplugin.Manager;
 
 import lombok.Data;
-import lombok.SneakyThrows;
-import net.neferett.redisapi.Annotations.Redis;
 import net.neferett.redisapi.RedisAPI;
 import net.neferett.tradingplugin.Trade.Price.PriceAction;
 import net.neferett.tradingplugin.Trade.Price.PriceEnum;
@@ -10,7 +8,8 @@ import net.neferett.tradingplugin.Trade.Trade;
 import net.neferett.tradingplugin.TradingPlugin;
 
 import java.util.Date;
-import java.util.UUID;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Data
 public class TradeManager {
@@ -22,6 +21,7 @@ public class TradeManager {
     }
 
     public void addTrade(Trade trade) {
+        trade.calculProfitAndLose();
         this.redisAPI.serialize(trade, trade.getUuid().toString());
     }
 
@@ -31,14 +31,21 @@ public class TradeManager {
         if (null == action)
             return;
 
+        Float open = action.getPrice();
+
         action = action.cloneAction();
 
         action.setClosedAt(new Date());
         action.setType(PriceEnum.CLOSE);
+        action.calculDelta(open, trade.getType());
 
         trade.getActions().add(action);
 
         this.redisAPI.serialize(trade, trade.getUuid().toString());
+    }
+
+    public List<Trade> findTrade(String ...specs) {
+        return this.redisAPI.contains(Trade.class, specs).values().stream().map(e -> (Trade)e).collect(Collectors.toList());
     }
 
     public Trade retrieveTrade(String uuid) {
