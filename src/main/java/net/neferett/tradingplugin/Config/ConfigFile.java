@@ -18,13 +18,4 @@ public class ConfigFile implements Config {
 
     @NonNull
     private List<String> routes;
-
-    @NonNull
-    private String ip;
-
-    @NonNull
-    private String password;
-
-    @NonNull
-    private int redisPort;
 }

@@ -26,6 +26,12 @@ public class Trade {
     private TradeType type;
 
     @NonNull
+    private TradeStatus status;
+
+    @NonNull
+    private TradeState state;
+
+    @NonNull
     private List<PriceAction> actions;
 
     @NonNull

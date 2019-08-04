@@ -5,6 +5,8 @@ import net.neferett.coreengine.CoreEngine;
 import net.neferett.coreengine.Processors.Config.PreConfig;
 import net.neferett.coreengine.Processors.Plugins.ExtendablePlugin;
 import net.neferett.coreengine.Processors.Plugins.Plugin;
+import net.neferett.hookerplugin.HookerManager.HookerManager;
+import net.neferett.hookerplugin.HookerPlugin;
 import net.neferett.redisapi.RedisAPI;
 import net.neferett.tradingplugin.Commands.addTrade;
 import net.neferett.tradingplugin.Commands.closeTrade;
@@ -25,6 +27,7 @@ public class TradingPlugin extends ExtendablePlugin {
     private TradeManager tradeManager;
 
     public static TradingPlugin getInstance() {
+        System.out.println("dedans");
         return (TradingPlugin) CoreEngine.getInstance().getPlugin(TradingPlugin.class);
     }
 
@@ -42,7 +45,8 @@ public class TradingPlugin extends ExtendablePlugin {
     public void onEnable() {
         this.loadConfig();
 
-        this.redisAPI = new RedisAPI(this.configFile.getIp(), this.configFile.getPassword(), this.configFile.getRedisPort());
+        this.redisAPI = CoreEngine.getInstance().getRedisAPI();
+
         this.tradeManager = new TradeManager();
 
         this.addRoute();

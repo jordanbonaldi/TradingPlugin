@@ -1,15 +1,21 @@
 package net.neferett.tradingplugin.Commands;
 
+import net.neferett.coreengine.CoreEngine;
 import net.neferett.coreengine.Processors.Logger.Logger;
 import net.neferett.coreengine.Processors.Plugins.Commands.Command;
 import net.neferett.coreengine.Processors.Plugins.Commands.ExtendableCommand;
+import net.neferett.hookerplugin.Hooker.Pair.Pair;
+import net.neferett.hookerplugin.HookerManager.HookerManager;
+import net.neferett.hookerplugin.HookerPlugin;
 import net.neferett.tradingplugin.Trade.Price.PriceAction;
 import net.neferett.tradingplugin.Trade.Price.PriceEnum;
 import net.neferett.tradingplugin.Trade.Trade;
+import net.neferett.tradingplugin.Trade.TradeState;
+import net.neferett.tradingplugin.Trade.TradeStatus;
 import net.neferett.tradingplugin.Trade.TradeType;
 import net.neferett.tradingplugin.TradingPlugin;
 
-import java.lang.reflect.Array;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -46,8 +52,14 @@ public class addTrade extends ExtendableCommand {
 
             return false;
         }
+        Pair pairInstance = HookerManager.getInstance().getPair(pair);
 
-        Trade trade = new Trade(pair, TradeType.getType(type), action, UUID.randomUUID());
+        if (pairInstance == null) {
+            Logger.log("Pair: " + pair + " doesn't exists");
+            return false;
+        }
+
+        Trade trade = new Trade(pair, TradeType.getType(type), TradeStatus.OPENED, TradeState.NONE, action, UUID.randomUUID());
 
         TradingPlugin.getInstance().getTradeManager().addTrade(trade);
 
