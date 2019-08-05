@@ -27,7 +27,6 @@ public class TradingPlugin extends ExtendablePlugin {
     private TradeManager tradeManager;
 
     public static TradingPlugin getInstance() {
-        System.out.println("dedans");
         return (TradingPlugin) CoreEngine.getInstance().getPlugin(TradingPlugin.class);
     }
 

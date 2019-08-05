@@ -52,10 +52,13 @@ public class addTrade extends ExtendableCommand {
 
             return false;
         }
-        Pair pairInstance = HookerManager.getInstance().getPair(pair);
 
-        if (pairInstance == null) {
-            Logger.log("Pair: " + pair + " doesn't exists");
+        HookerManager manager = HookerManager.getInstance();
+
+        Pair pairTrade = manager.getPair(pair);
+
+        if (pairTrade == null) {
+            Logger.log("Pair: "+ pair + " doesn't exists");
             return false;
         }
 
