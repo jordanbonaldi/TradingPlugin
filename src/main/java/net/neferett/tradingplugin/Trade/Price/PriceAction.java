@@ -50,8 +50,7 @@ public class PriceAction {
     }
 
     public boolean checkHit(PriceAction action, TradeType type) {
-        System.out.println(type + " " + this.price + " cp " + action.getPrice() + " rs : " + this.price.compareTo(action.getPrice()));
-        return (type == TradeType.SELL ? this.price.compareTo(action.getPrice()) : action.getPrice().compareTo(this.price)) <= 0;
+        return type == TradeType.BUY ? this.getPrice().floatValue() <= action.getPrice().floatValue() : this.getPrice().floatValue() >= action.getPrice().floatValue();
     }
 
 }

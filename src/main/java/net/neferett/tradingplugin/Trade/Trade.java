@@ -72,8 +72,11 @@ public class Trade {
     public void updatePrice(BigDecimal price) {
         PriceAction action = this.getPriceOf(PriceEnum.CURRENT);
 
-        if (action == null)
-            this.actions.add(action = this.createCurrent(price));
+        if (action == null) {
+            action = this.createCurrent(price);
+
+            this.actions.add(action);
+        }
 
         action.setPrice(price);
         action.setUpdatedAt(new Date());
@@ -85,18 +88,16 @@ public class Trade {
         if (!updateStopLoss())
             this.updateTargets();
 
-        System.out.println(action);
     }
 
     private boolean updateStopLoss() {
         PriceAction stopPrice = this.getPriceOf(PriceEnum.STOP);
         PriceAction currentPrice = this.getPriceOf(PriceEnum.CURRENT);
 
-        System.out.println(stopPrice.checkHit(currentPrice, this.type));
-
-        if (!stopPrice.checkHit(currentPrice, this.type))
+        if (!currentPrice.checkHit(stopPrice, this.type))
             return false;
 
+        stopPrice.setDelta(currentPrice.getDelta());
         stopPrice.setClosedAt(new Date());
         stopPrice.setUpdatedAt(new Date());
         this.stopTrade(TradeState.LOST);
@@ -107,7 +108,6 @@ public class Trade {
     }
 
     private void removePriceAction() {
-        this.actions.remove(this.getPriceOf(PriceEnum.OPEN));
         this.actions.remove(this.getPriceOf(PriceEnum.CURRENT));
     }
 
@@ -120,7 +120,6 @@ public class Trade {
         target.setUpdatedAt(new Date());
 
         System.out.println("Target hit");
-        this.removePriceAction();
     }
 
     private void updateTargets() {
@@ -132,6 +131,7 @@ public class Trade {
             return;
 
         this.stopTrade(TradeState.WON);
+        this.removePriceAction();
     }
 
 }
