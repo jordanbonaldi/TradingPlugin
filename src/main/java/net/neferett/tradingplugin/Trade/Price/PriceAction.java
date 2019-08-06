@@ -4,6 +4,8 @@ import lombok.*;
 import net.neferett.tradingplugin.Trade.Trade;
 import net.neferett.tradingplugin.Trade.TradeType;
 
+import java.lang.reflect.Type;
+import java.math.BigDecimal;
 import java.util.Date;
 
 @Data
@@ -11,7 +13,7 @@ import java.util.Date;
 @NoArgsConstructor
 public class PriceAction {
     @NonNull
-    private Float price;
+    private BigDecimal price;
 
     @NonNull
     private PriceEnum type;
@@ -27,7 +29,7 @@ public class PriceAction {
     private Float delta;
 
     public PriceAction(Float price, PriceEnum type) {
-        this(price, type, new Date(), new Date(), null, null);
+        this(new BigDecimal(price), type, new Date(), new Date(), null, null);
     }
 
     @SneakyThrows
@@ -42,7 +44,14 @@ public class PriceAction {
         );
     }
 
-    public void calculDelta(Float price, TradeType type) {
-        this.delta = (((price*100) / this.price) - 100) * (type == TradeType.BUY ? -1 : 1);
+    public void calculDelta(BigDecimal price, TradeType type) {
+        this.updatedAt = new Date();
+        this.delta = (((price.floatValue()*100) / this.price.floatValue()) - 100) * (type == TradeType.BUY ? -1 : 1);
     }
+
+    public boolean checkHit(PriceAction action, TradeType type) {
+        System.out.println(type + " " + this.price + " cp " + action.getPrice() + " rs : " + this.price.compareTo(action.getPrice()));
+        return (type == TradeType.SELL ? this.price.compareTo(action.getPrice()) : action.getPrice().compareTo(this.price)) <= 0;
+    }
+
 }

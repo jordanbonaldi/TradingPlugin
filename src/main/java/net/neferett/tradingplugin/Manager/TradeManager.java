@@ -8,6 +8,7 @@ import net.neferett.tradingplugin.Trade.Trade;
 import net.neferett.tradingplugin.Trade.TradeStatus;
 import net.neferett.tradingplugin.TradingPlugin;
 
+import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -26,13 +27,19 @@ public class TradeManager {
         this.redisAPI.serialize(trade, trade.getUuid().toString());
     }
 
+    public void updatePrice(BigDecimal price, Trade trade) {
+        trade.updatePrice(price);
+
+        this.redisAPI.serialize(trade, trade.getUuid().toString());
+    }
+
     public void closeTrade(Trade trade) {
         PriceAction action = trade.getActions().stream().filter(e -> e.getType() == PriceEnum.OPEN).findFirst().orElse(null);
 
         if (null == action)
             return;
 
-        Float open = action.getPrice();
+        BigDecimal open = action.getPrice();
 
         action = action.cloneAction();
 

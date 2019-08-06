@@ -1,12 +1,10 @@
 package net.neferett.tradingplugin.Commands;
 
-import net.neferett.coreengine.CoreEngine;
 import net.neferett.coreengine.Processors.Logger.Logger;
 import net.neferett.coreengine.Processors.Plugins.Commands.Command;
 import net.neferett.coreengine.Processors.Plugins.Commands.ExtendableCommand;
-import net.neferett.hookerplugin.Hooker.Pair.Pair;
 import net.neferett.hookerplugin.HookerManager.HookerManager;
-import net.neferett.hookerplugin.HookerPlugin;
+import net.neferett.hookerplugin.Instances.Pair;
 import net.neferett.tradingplugin.Trade.Price.PriceAction;
 import net.neferett.tradingplugin.Trade.Price.PriceEnum;
 import net.neferett.tradingplugin.Trade.Trade;
@@ -14,7 +12,6 @@ import net.neferett.tradingplugin.Trade.TradeState;
 import net.neferett.tradingplugin.Trade.TradeStatus;
 import net.neferett.tradingplugin.Trade.TradeType;
 import net.neferett.tradingplugin.TradingPlugin;
-
 
 import java.util.ArrayList;
 import java.util.Arrays;
