@@ -4,12 +4,12 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.NonNull;
-import net.neferett.coreengine.CoreEngine;
-import net.neferett.coreengine.Processors.Plugins.CorePlugin;
 import net.neferett.redisapi.Annotations.Redis;
+import net.neferett.tradingplugin.Trade.Enums.TradeState;
+import net.neferett.tradingplugin.Trade.Enums.TradeStatus;
+import net.neferett.tradingplugin.Trade.Enums.TradeType;
 import net.neferett.tradingplugin.Trade.Price.PriceAction;
-import net.neferett.tradingplugin.Trade.Price.PriceEnum;
-import net.neferett.tradingplugin.TradingPlugin;
+import net.neferett.tradingplugin.Trade.Enums.PriceEnum;
 
 import java.math.BigDecimal;
 import java.util.Date;
@@ -30,10 +30,10 @@ public class Trade {
     private TradeType type;
 
     @NonNull
-    private TradeStatus status;
+    private net.neferett.tradingplugin.Trade.Enums.TradeStatus status;
 
     @NonNull
-    private TradeState state;
+    private net.neferett.tradingplugin.Trade.Enums.TradeState state;
 
     @NonNull
     private List<PriceAction> actions;
@@ -46,10 +46,10 @@ public class Trade {
     }
 
     private PriceAction createCurrent(BigDecimal price) {
-        return new PriceAction(price, PriceEnum.CURRENT, new Date(), new Date(), null, null);
+        return new PriceAction(price, PriceEnum.CURRENT, new Date(), new Date(), false, null, null);
     }
 
-    private void stopTrade(TradeState state) {
+    private void stopTrade(net.neferett.tradingplugin.Trade.Enums.TradeState state) {
         this.setStatus(TradeStatus.CLOSED);
         this.setState(state);
 
@@ -100,7 +100,7 @@ public class Trade {
         stopPrice.setDelta(currentPrice.getDelta());
         stopPrice.setClosedAt(new Date());
         stopPrice.setUpdatedAt(new Date());
-        this.stopTrade(TradeState.LOST);
+        this.stopTrade(net.neferett.tradingplugin.Trade.Enums.TradeState.LOST);
 
         this.removePriceAction();
 
@@ -119,11 +119,13 @@ public class Trade {
         target.setClosedAt(new Date());
         target.setUpdatedAt(new Date());
 
+        target.setHit(true);
+
         System.out.println("Target hit");
     }
 
     private void updateTargets() {
-        List<PriceAction> targets = actions.stream().filter(e -> e.getType() == PriceEnum.TARGET).collect(Collectors.toList());
+        List<PriceAction> targets = actions.stream().filter(e -> e.getType() == PriceEnum.TARGET && !e.isHit()).collect(Collectors.toList());
 
         targets.forEach(this::updateTarget);
 
@@ -132,6 +134,10 @@ public class Trade {
 
         this.stopTrade(TradeState.WON);
         this.removePriceAction();
+    }
+
+    public double calculateTargetsDelta() {
+        return actions.stream().filter(e -> e.getType() == PriceEnum.TARGET).collect(Collectors.toList()).stream().mapToDouble(PriceAction::getDelta).sum();
     }
 
 }

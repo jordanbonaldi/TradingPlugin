@@ -3,9 +3,9 @@ package net.neferett.tradingplugin.Manager;
 import lombok.Data;
 import net.neferett.redisapi.RedisAPI;
 import net.neferett.tradingplugin.Trade.Price.PriceAction;
-import net.neferett.tradingplugin.Trade.Price.PriceEnum;
+import net.neferett.tradingplugin.Trade.Enums.PriceEnum;
 import net.neferett.tradingplugin.Trade.Trade;
-import net.neferett.tradingplugin.Trade.TradeStatus;
+import net.neferett.tradingplugin.Trade.Enums.TradeStatus;
 import net.neferett.tradingplugin.TradingPlugin;
 
 import java.math.BigDecimal;
@@ -51,6 +51,10 @@ public class TradeManager {
         trade.setStatus(TradeStatus.CLOSED);
 
         this.redisAPI.serialize(trade, trade.getUuid().toString());
+    }
+
+    public List<Trade> getAllTrades() {
+        return this.redisAPI.contains(Trade.class).values().stream().map(e -> (Trade)e).collect(Collectors.toList());
     }
 
     public List<Trade> findTrade(String ...specs) {

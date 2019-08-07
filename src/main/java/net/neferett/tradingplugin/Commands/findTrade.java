@@ -3,10 +3,9 @@ package net.neferett.tradingplugin.Commands;
 import net.neferett.coreengine.Processors.Logger.Logger;
 import net.neferett.coreengine.Processors.Plugins.Commands.Command;
 import net.neferett.coreengine.Processors.Plugins.Commands.ExtendableCommand;
-import net.neferett.coreengine.Utils.ClassSerializer;
 import net.neferett.tradingplugin.Manager.TradeManager;
 import net.neferett.tradingplugin.Trade.Price.PriceAction;
-import net.neferett.tradingplugin.Trade.Price.PriceEnum;
+import net.neferett.tradingplugin.Trade.Enums.PriceEnum;
 import net.neferett.tradingplugin.Trade.Trade;
 
 import java.util.List;

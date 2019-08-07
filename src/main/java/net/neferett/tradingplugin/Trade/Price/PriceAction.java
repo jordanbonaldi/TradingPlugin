@@ -1,10 +1,9 @@
 package net.neferett.tradingplugin.Trade.Price;
 
 import lombok.*;
-import net.neferett.tradingplugin.Trade.Trade;
-import net.neferett.tradingplugin.Trade.TradeType;
+import net.neferett.tradingplugin.Trade.Enums.PriceEnum;
+import net.neferett.tradingplugin.Trade.Enums.TradeType;
 
-import java.lang.reflect.Type;
 import java.math.BigDecimal;
 import java.util.Date;
 
@@ -16,7 +15,7 @@ public class PriceAction {
     private BigDecimal price;
 
     @NonNull
-    private PriceEnum type;
+    private net.neferett.tradingplugin.Trade.Enums.PriceEnum type;
 
     @NonNull
     private Date createdAt;
@@ -24,12 +23,14 @@ public class PriceAction {
     @NonNull
     private Date updatedAt;
 
+    private boolean hit;
+
     private Date closedAt;
 
     private Float delta;
 
     public PriceAction(Float price, PriceEnum type) {
-        this(new BigDecimal(price), type, new Date(), new Date(), null, null);
+        this(new BigDecimal(price), type, new Date(), new Date(), false, null, null);
     }
 
     @SneakyThrows
@@ -39,6 +40,7 @@ public class PriceAction {
                 this.type,
                 this.getCreatedAt(),
                 this.getUpdatedAt(),
+                false,
                 this.getClosedAt(),
                 this.getDelta()
         );

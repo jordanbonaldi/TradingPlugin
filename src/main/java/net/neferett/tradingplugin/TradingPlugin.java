@@ -14,6 +14,7 @@ import net.neferett.tradingplugin.Commands.findTrade;
 import net.neferett.tradingplugin.Config.ConfigFile;
 import net.neferett.tradingplugin.Manager.TradeManager;
 import net.neferett.tradingplugin.Routes.FindTrade;
+import net.neferett.tradingplugin.Routes.Statistics;
 import net.neferett.tradingplugin.Routes.TradeInformation;
 
 @Plugin(name = "TradingPlugin", configPath = "TradingPlugin/config.json")
@@ -38,6 +39,7 @@ public class TradingPlugin extends ExtendablePlugin {
     private void addRoute() {
         this.addRoute(TradeInformation.class);
         this.addRoute(FindTrade.class);
+        this.addRoute(Statistics.class);
     }
 
     @Override
