@@ -5,6 +5,7 @@ import net.neferett.coreengine.Processors.Plugins.Commands.Command;
 import net.neferett.coreengine.Processors.Plugins.Commands.ExtendableCommand;
 import net.neferett.hookerplugin.HookerManager.HookerManager;
 import net.neferett.hookerplugin.Instances.Pair;
+import net.neferett.socialmedia.SocialMedia;
 import net.neferett.tradingplugin.Trade.Price.PriceAction;
 import net.neferett.tradingplugin.Trade.Enums.PriceEnum;
 import net.neferett.tradingplugin.Trade.Trade;
@@ -59,7 +60,11 @@ public class addTrade extends ExtendableCommand {
             return false;
         }
 
-        Trade trade = new Trade(pair, TradeType.getType(type), TradeStatus.OPENED, TradeState.NONE, action, UUID.randomUUID());
+        Trade trade = new Trade(pair, TradeType.getType(type), TradeStatus.OPENED, TradeState.NONE, action, UUID.randomUUID(), pairTrade.getType());
+
+        trade.calculProfitAndLose();
+
+        SocialMedia.getInstance().getBotsManager().sendTrade(trade);
 
         TradingPlugin.getInstance().getTradeManager().addTrade(trade);
 

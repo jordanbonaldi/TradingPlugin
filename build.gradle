@@ -41,9 +41,10 @@ dependencies {
     testCompile group: 'junit', name: 'junit', version: '4.12'
     compile group: 'org.json', name: 'json', version: '20180813'
     compile group: 'org.reflections', name: 'reflections', version: '0.9.11'
-    compile name: 'CoreEngine-all-1.2-SNAPSHOT'
+    implementation name: 'CoreEngine-all-1.2-SNAPSHOT'
     compile name: 'RedisAPI-all-1.0-SNAPSHOT'
-    compile name: 'HookerPlugin-all-1.0-SNAPSHOT'
+    implementation name: 'HookerPlugin-all-1.0-SNAPSHOT'
+    implementation name: 'SocialMedia-all-1.0-SNAPSHOT'
     compileOnly 'org.projectlombok:lombok:1.18.4'
     annotationProcessor 'org.projectlombok:lombok:1.18.4'
 }

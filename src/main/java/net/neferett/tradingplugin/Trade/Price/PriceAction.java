@@ -12,7 +12,7 @@ import java.util.Date;
 @NoArgsConstructor
 public class PriceAction {
     @NonNull
-    private BigDecimal price;
+    private Float price;
 
     @NonNull
     private net.neferett.tradingplugin.Trade.Enums.PriceEnum type;
@@ -30,7 +30,7 @@ public class PriceAction {
     private Float delta;
 
     public PriceAction(Float price, PriceEnum type) {
-        this(new BigDecimal(price), type, new Date(), new Date(), false, null, null);
+        this(price, type, new Date(), new Date(), false, null, null);
     }
 
     @SneakyThrows
@@ -46,13 +46,13 @@ public class PriceAction {
         );
     }
 
-    public void calculDelta(BigDecimal price, TradeType type) {
+    public void calculDelta(Float price, TradeType type) {
         this.updatedAt = new Date();
-        this.delta = (((price.floatValue()*100) / this.price.floatValue()) - 100) * (type == TradeType.BUY ? -1 : 1);
+        this.delta = (((price*100) / this.price) - 100) * (type == TradeType.BUY ? -1 : 1);
     }
 
     public boolean checkHit(PriceAction action, TradeType type) {
-        return type == TradeType.BUY ? this.getPrice().floatValue() <= action.getPrice().floatValue() : this.getPrice().floatValue() >= action.getPrice().floatValue();
+        return type == TradeType.BUY ? this.getPrice() <= action.getPrice() : this.getPrice() >= action.getPrice();
     }
 
 }

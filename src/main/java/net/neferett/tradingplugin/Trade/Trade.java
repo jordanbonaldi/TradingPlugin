@@ -5,13 +5,13 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.NonNull;
 import net.neferett.redisapi.Annotations.Redis;
+import net.neferett.socialmedia.SocialMedia;
+import net.neferett.tradingplugin.Trade.Enums.PriceEnum;
 import net.neferett.tradingplugin.Trade.Enums.TradeState;
 import net.neferett.tradingplugin.Trade.Enums.TradeStatus;
 import net.neferett.tradingplugin.Trade.Enums.TradeType;
 import net.neferett.tradingplugin.Trade.Price.PriceAction;
-import net.neferett.tradingplugin.Trade.Enums.PriceEnum;
 
-import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
@@ -30,10 +30,10 @@ public class Trade {
     private TradeType type;
 
     @NonNull
-    private net.neferett.tradingplugin.Trade.Enums.TradeStatus status;
+    private TradeStatus status;
 
     @NonNull
-    private net.neferett.tradingplugin.Trade.Enums.TradeState state;
+    private TradeState state;
 
     @NonNull
     private List<PriceAction> actions;
@@ -41,15 +41,18 @@ public class Trade {
     @NonNull
     private UUID uuid;
 
+    @NonNull
+    private String asset;
+
     public PriceAction getPriceOf(PriceEnum priceEnum) {
         return this.actions.stream().filter(e -> e.getType() == priceEnum).findFirst().orElse(null);
     }
 
-    private PriceAction createCurrent(BigDecimal price) {
+    private PriceAction createCurrent(Float price) {
         return new PriceAction(price, PriceEnum.CURRENT, new Date(), new Date(), false, null, null);
     }
 
-    private void stopTrade(net.neferett.tradingplugin.Trade.Enums.TradeState state) {
+    private void stopTrade(TradeState state) {
         this.setStatus(TradeStatus.CLOSED);
         this.setState(state);
 
@@ -69,7 +72,7 @@ public class Trade {
             actionPrice.calculDelta(openPrice.getPrice(), this.type);
     }
 
-    public void updatePrice(BigDecimal price) {
+    public void updatePrice(Float price) {
         PriceAction action = this.getPriceOf(PriceEnum.CURRENT);
 
         if (action == null) {
@@ -100,9 +103,11 @@ public class Trade {
         stopPrice.setDelta(currentPrice.getDelta());
         stopPrice.setClosedAt(new Date());
         stopPrice.setUpdatedAt(new Date());
-        this.stopTrade(net.neferett.tradingplugin.Trade.Enums.TradeState.LOST);
+        this.stopTrade(TradeState.LOST);
 
         this.removePriceAction();
+
+        SocialMedia.getInstance().getBotsManager().sendPriceHit(this, stopPrice);
 
         return true;
     }
@@ -121,7 +126,7 @@ public class Trade {
 
         target.setHit(true);
 
-        System.out.println("Target hit");
+        SocialMedia.getInstance().getBotsManager().sendPriceHit(this, target);
     }
 
     private void updateTargets() {

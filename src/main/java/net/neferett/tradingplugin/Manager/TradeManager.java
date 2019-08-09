@@ -27,7 +27,7 @@ public class TradeManager {
         this.redisAPI.serialize(trade, trade.getUuid().toString());
     }
 
-    public void updatePrice(BigDecimal price, Trade trade) {
+    public void updatePrice(Float price, Trade trade) {
         trade.updatePrice(price);
 
         this.redisAPI.serialize(trade, trade.getUuid().toString());
@@ -39,7 +39,7 @@ public class TradeManager {
         if (null == action)
             return;
 
-        BigDecimal open = action.getPrice();
+        Float open = action.getPrice();
 
         action = action.cloneAction();
 
