@@ -33,6 +33,9 @@ public class Trade {
     private TradeStatus status;
 
     @NonNull
+    private String photo;
+
+    @NonNull
     private TradeState state;
 
     @NonNull
@@ -91,6 +94,7 @@ public class Trade {
         if (!updateStopLoss())
             this.updateTargets();
 
+        SocialMedia.getInstance().getBotsManager().updatePrice(this);
     }
 
     private boolean updateStopLoss() {
@@ -107,7 +111,9 @@ public class Trade {
 
         this.removePriceAction();
 
-        SocialMedia.getInstance().getBotsManager().sendPriceHit(this, stopPrice);
+        stopPrice.setHit(true);
+
+        SocialMedia.getInstance().getBotsManager().updatePrice(this);
 
         return true;
     }
@@ -126,7 +132,7 @@ public class Trade {
 
         target.setHit(true);
 
-        SocialMedia.getInstance().getBotsManager().sendPriceHit(this, target);
+        SocialMedia.getInstance().getBotsManager().updatePrice(this);
     }
 
     private void updateTargets() {
@@ -139,6 +145,10 @@ public class Trade {
 
         this.stopTrade(TradeState.WON);
         this.removePriceAction();
+    }
+
+    public double calculateFinalDelta() {
+        return this.state == TradeState.WON ? this.calculateTargetsDelta() : this.getPriceOf(PriceEnum.STOP).getDelta();
     }
 
     public double calculateTargetsDelta() {

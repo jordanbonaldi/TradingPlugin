@@ -21,19 +21,20 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Command(name = "addTrade", minLength = 4, desc="Create a new SELL Or BUY Trade",
-        help = "<pair> <type> <openPrice> <stopPrice> <target1> <target2...>")
+        help = "<photo> <pair> <type> <openPrice> <stopPrice> <target1> <target2...>")
 public class addTrade extends ExtendableCommand {
 
     @Override
     public boolean onCommand(String... strings) {
-        String pair = strings[0];
-        String type = strings[1];
+        String photo = strings[0];
+        String pair = strings[1];
+        String type = strings[2];
 
-        PriceAction openPrice = new PriceAction(Float.valueOf(strings[2]), PriceEnum.OPEN);
-        PriceAction stopPrice = new PriceAction(Float.valueOf(strings[3]), PriceEnum.STOP);
+        PriceAction openPrice = new PriceAction(Float.valueOf(strings[3]), PriceEnum.OPEN);
+        PriceAction stopPrice = new PriceAction(Float.valueOf(strings[4]), PriceEnum.STOP);
 
         List<Float> targets = Arrays.stream(
-                Arrays.copyOfRange(strings, 4, strings.length)).map(Float::valueOf).collect(Collectors.toList());
+                Arrays.copyOfRange(strings, 5, strings.length)).map(Float::valueOf).collect(Collectors.toList());
 
         List<PriceAction> action = new ArrayList<PriceAction>(){{
             add(openPrice);
@@ -60,7 +61,7 @@ public class addTrade extends ExtendableCommand {
             return false;
         }
 
-        Trade trade = new Trade(pair, TradeType.getType(type), TradeStatus.OPENED, TradeState.NONE, action, UUID.randomUUID(), pairTrade.getType());
+        Trade trade = new Trade(pair, TradeType.getType(type), TradeStatus.OPENED, photo, TradeState.NONE, action, UUID.randomUUID(), pairTrade.getType());
 
         trade.calculProfitAndLose();
 
