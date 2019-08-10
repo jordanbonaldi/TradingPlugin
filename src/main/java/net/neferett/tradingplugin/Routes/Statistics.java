@@ -12,6 +12,7 @@ import net.neferett.tradingplugin.Trade.Enums.TradeState;
 import net.neferett.tradingplugin.Trade.Enums.TradeStatus;
 import org.json.JSONObject;
 
+import java.lang.reflect.Array;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -21,7 +22,8 @@ public class Statistics extends RoutingProperties {
     @Override
     public JSONObject routeAction(HttpExchange t)
     {
-        List<Trade> trades = TradeManager.getInstance().findTrade(this.params.get("spec").split(","));
+        List<Trade> trades = TradeManager.getInstance()
+                .findTrade(this.params.size() > 0 ? this.params.get("spec").split(",") : null);
 
         return ClassSerializer.serialize(new Statistic().build(trades));
     }
